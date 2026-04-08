@@ -15,5 +15,3 @@ connectDB()
 .catch((err) => {
     console.log("Server startup failed:", err);
 });
-
-
