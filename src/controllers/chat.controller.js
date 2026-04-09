@@ -97,9 +97,3 @@ export const getChats = asyncHandler(async (req, res) => {
         new ApiResponse(200, chats, "Chats fetched successfully")
     );
 });
-
-export {
-    getChats,
-    createGroupChat,
-    accessChat
-}

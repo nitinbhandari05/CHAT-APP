@@ -1,5 +1,7 @@
 import { Message } from "../models/message.model.js";
 import { Chat } from "../models/chat.model.js";
+import { createNotification } from "./notification.controller.js";
+import { emitSocketEvent } from "../sockets/socket.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -41,6 +43,25 @@ const sendMessage = asyncHandler(async (req, res) => {
     await Chat.findByIdAndUpdate(chatId, {
         latestMessage: message._id,
     });
+
+    const recipients = (message.chat?.users || []).filter(
+        (user) => user?._id?.toString() !== req.user._id.toString()
+    );
+
+    await Promise.all(recipients.map(async (user) => {
+        emitSocketEvent({
+            room: user._id,
+            event: "message received",
+            data: message
+        });
+
+        await createNotification({
+            user: user._id,
+            content: message.content,
+            relatedChat: message.chat?._id,
+            type: "message"
+        });
+    }));
 
     return res.status(201).json(
         new ApiResponse(201, message, "Message sent successfully")

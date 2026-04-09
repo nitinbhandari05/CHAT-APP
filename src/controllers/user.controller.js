@@ -1,4 +1,4 @@
-import { User } from "../models/chat.model.js";
+import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -29,42 +29,60 @@ const generateAccessTokenAndRefreshToken = async (userId) => {
 
 // REGISTER 
 const registerUser = asyncHandler(async (req, res) => {
-    const { fullname, username, email, password } = req.body;
+    const {
+        fullname,
+        username,
+        email,
+        password,
+        avatar,
+        avatarUrl
+    } = req.body;
 
     // validation
     if ([fullname, username, email, password].some((field) => !field?.trim())) {
         throw new ApiError(400, "All fields are required");
     }
 
+    const normalizedUsername = username.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
+
     // check existing user
     const existedUser = await User.findOne({
-        $or: [{ username }, { email }]
+        $or: [{ username: normalizedUsername }, { email: normalizedEmail }]
     });
 
     if (existedUser) {
         throw new ApiError(400, "User already exists");
     }
 
-    // avatar
+    const avatarFromBody = avatarUrl?.trim() || avatar?.trim();
     const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    let finalAvatarUrl = avatarFromBody || "";
 
-    if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is required");
+    if (avatarLocalPath) {
+        const avatarUpload = await uploadOnCloudinary(avatarLocalPath);
+
+        if (!avatarUpload?.url) {
+            throw new ApiError(400, "Avatar upload failed");
+        }
+
+        finalAvatarUrl = avatarUpload.url;
     }
 
-    const avatarUpload = await uploadOnCloudinary(avatarLocalPath);
-
-    if (!avatarUpload?.url) {
-        throw new ApiError(400, "Avatar upload failed");
+    if (!finalAvatarUrl) {
+        throw new ApiError(
+            400,
+            "Avatar is required. Provide avatarUrl/avatar or upload an avatar file."
+        );
     }
 
     // create user
     const user = await User.create({
         fullname,
-        username,
-        email,
+        username: normalizedUsername,
+        email: normalizedEmail,
         password,
-        avatar: avatarUpload.url,
+        avatar: finalAvatarUrl,
     });
 
     const createdUser = await User.findById(user._id)
@@ -88,8 +106,11 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findOne({
-        $or: [{ username }, { email }]
-    });
+        $or: [
+            username ? { username: username.trim().toLowerCase() } : null,
+            email ? { email: email.trim().toLowerCase() } : null
+        ].filter(Boolean)
+    }).select("+password");
 
     if (!user) {
         throw new ApiError(404, "User does not exist");
@@ -109,7 +130,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
     };
 
     return res
@@ -137,7 +159,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
     };
 
     return res
@@ -162,7 +185,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             process.env.REFRESH_TOKEN_SECRET
         );
 
-        const user = await User.findById(decodedToken?._id);
+        const user = await User.findById(decodedToken?._id).select("+refreshToken");
 
         if (!user || incomingToken !== user.refreshToken) {
             throw new ApiError(401, "Invalid or expired refresh token");
@@ -173,7 +196,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
         };
 
         return res
@@ -197,7 +221,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
-    const user = await User.findById(req.user?._id);
+    const user = await User.findById(req.user?._id).select("+password");
 
     if (!user) {
         throw new ApiError(404, "User not found");

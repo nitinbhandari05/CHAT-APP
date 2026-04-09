@@ -1,4 +1,5 @@
 import { Notification } from "../models/notification.model.js";
+import { emitSocketEvent } from "../sockets/socket.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -6,13 +7,24 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 // CREATE NOTIFICATION 
 const createNotification = async (data) => {
     try {
-        if (!data?.user || !data?.message) {
-            throw new ApiError(400, "User and message are required");
+        if (!data?.user || !data?.content) {
+            throw new ApiError(400, "User and content are required");
         }
 
-        return await Notification.create(data);
+        const notification = await Notification.create(data);
+
+        emitSocketEvent({
+            room: notification.user,
+            event: "notification received",
+            data: notification
+        });
+
+        return notification;
     } catch (error) {
-        throw new ApiError(500, "Failed to create notification");
+        throw new ApiError(
+            error.statusCode || 500,
+            error.message || "Failed to create notification"
+        );
     }
 };
 
@@ -48,6 +60,12 @@ const markAsRead = asyncHandler(async (req, res) => {
 
     notification.isRead = true;
     await notification.save();
+
+    emitSocketEvent({
+        room: req.user._id,
+        event: "notification read",
+        data: notification
+    });
 
     return res.status(200).json(
         new ApiResponse(200, {}, "Marked as read")
