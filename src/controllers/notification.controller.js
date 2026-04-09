@@ -75,11 +75,18 @@ const markAsRead = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Notification ID is required");
     }
 
-    const notification = await Notification.findOneAndUpdate(
-        {
-            _id: id,
-            user: req.user._id
-        },
+    const existingNotification = await Notification.findById(id);
+
+    if (!existingNotification) {
+        throw new ApiError(404, "Notification not found");
+    }
+
+    if (existingNotification.user.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "You are not allowed to update this notification");
+    }
+
+    const notification = await Notification.findByIdAndUpdate(
+        id,
         {
             isRead: true
         },
@@ -87,10 +94,6 @@ const markAsRead = asyncHandler(async (req, res) => {
             new: true
         }
     ).populate("relatedChat", "chatName isGroupChat users");
-
-    if (!notification) {
-        throw new ApiError(404, "Notification not found");
-    }
 
     emitSocketEvent({
         room: req.user._id,
