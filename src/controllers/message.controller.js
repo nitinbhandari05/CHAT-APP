@@ -77,9 +77,37 @@ const getMessages = asyncHandler(async (req, res) => {
         throw new ApiError(400, "ChatId is required");
     }
 
+    const chat = await Chat.findById(chatId)
+        .populate("users", "fullname username email")
+        .populate("groupAdmin", "fullname username email");
+
+    if (!chat) {
+        throw new ApiError(404, "Chat not found");
+    }
+
+    const isParticipant = chat.users.some(
+        (user) => user?._id?.toString() === req.user?._id?.toString()
+    );
+
+    if (!isParticipant) {
+        throw new ApiError(403, "You are not allowed to access messages for this chat");
+    }
+
     const messages = await Message.find({ chat: chatId })
         .populate("sender", "fullname username email")
-        .populate("chat")
+        .populate({
+            path: "chat",
+            populate: [
+                {
+                    path: "users",
+                    select: "fullname username email"
+                },
+                {
+                    path: "groupAdmin",
+                    select: "fullname username email"
+                }
+            ]
+        })
         .sort({ createdAt: 1 });
 
     return res.status(200).json(

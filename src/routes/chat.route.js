@@ -12,7 +12,7 @@ const router = Router();
 //  CHAT ROUTES 
 
 // Create or access 1-1 chat
-router.post("/", verifyJWT, accessChat);
+router.post("/1-1", verifyJWT, accessChat);
 
 // Create group chat
 router.post("/group", verifyJWT, createGroupChat);
