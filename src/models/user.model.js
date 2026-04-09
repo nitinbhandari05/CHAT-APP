@@ -29,11 +29,6 @@ const userSchema = new Schema(
 
     },
 
-    avatar: {
-      type: String,
-      required: true
-    },
-
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -84,6 +79,10 @@ userSchema.pre("save", async function () {
 
 
 userSchema.methods.isPasswordCorrect = async function (password) {
+  if (!password || !this.password) {
+    return false;
+  }
+
   return await bcrypt.compare(password, this.password);
 };
 

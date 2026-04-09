@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 // GENERATE TOKENS
 const generateAccessTokenAndRefreshToken = async (userId) => {
@@ -29,14 +28,13 @@ const generateAccessTokenAndRefreshToken = async (userId) => {
 
 // REGISTER 
 const registerUser = asyncHandler(async (req, res) => {
+    const requestBody = req.body || {};
     const {
         fullname,
         username,
         email,
-        password,
-        avatar,
-        avatarUrl
-    } = req.body;
+        password
+    } = requestBody;
 
     // validation
     if ([fullname, username, email, password].some((field) => !field?.trim())) {
@@ -55,34 +53,12 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User already exists");
     }
 
-    const avatarFromBody = avatarUrl?.trim() || avatar?.trim();
-    const avatarLocalPath = req.files?.avatar?.[0]?.path;
-    let finalAvatarUrl = avatarFromBody || "";
-
-    if (avatarLocalPath) {
-        const avatarUpload = await uploadOnCloudinary(avatarLocalPath);
-
-        if (!avatarUpload?.url) {
-            throw new ApiError(400, "Avatar upload failed");
-        }
-
-        finalAvatarUrl = avatarUpload.url;
-    }
-
-    if (!finalAvatarUrl) {
-        throw new ApiError(
-            400,
-            "Avatar is required. Provide avatarUrl/avatar or upload an avatar file."
-        );
-    }
-
     // create user
     const user = await User.create({
         fullname,
         username: normalizedUsername,
         email: normalizedEmail,
         password,
-        avatar: finalAvatarUrl,
     });
 
     const createdUser = await User.findById(user._id)
@@ -95,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 // LOGIN
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, username, password } = req.body;
+    const { email, username, password } = req.body || {};
 
     if (!(username || email)) {
         throw new ApiError(400, "Username or email is required");
@@ -219,7 +195,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 // CHANGE PASSWORD 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body || {};
+
+    if (!oldPassword || !newPassword) {
+        throw new ApiError(400, "Old password and new password are required");
+    }
 
     const user = await User.findById(req.user?._id).select("+password");
 

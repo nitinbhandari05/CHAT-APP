@@ -8,7 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 //SEND MESSAGE
 const sendMessage = asyncHandler(async (req, res) => {
-    const { content, chatId } = req.body;
+    const { content, chatId } = req.body || {};
 
     if (!content || !chatId) {
         throw new ApiError(400, "Content and chatId are required");

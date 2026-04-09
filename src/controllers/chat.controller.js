@@ -6,7 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 // ACCESS 1-1 CHAT
 export const accessChat = asyncHandler(async (req, res) => {
-    const { userId } = req.body;
+    const { userId } = req.body || {};
 
     if (!userId) {
         throw new ApiError(400, "UserId is required");
@@ -43,7 +43,7 @@ export const accessChat = asyncHandler(async (req, res) => {
 
 //  CREATE GROUP CHAT 
 export const createGroupChat = asyncHandler(async (req, res) => {
-    let { name, users } = req.body;
+    let { name, users } = req.body || {};
 
     if (!name || !users) {
         throw new ApiError(400, "Name and users are required");
