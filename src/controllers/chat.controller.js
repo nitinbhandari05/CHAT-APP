@@ -12,6 +12,16 @@ export const accessChat = asyncHandler(async (req, res) => {
         throw new ApiError(400, "UserId is required");
     }
 
+    if (userId.toString() === req.user._id.toString()) {
+        throw new ApiError(400, "You cannot start a chat with yourself");
+    }
+
+    const targetUser = await User.findById(userId).select("-password -refreshToken");
+
+    if (!targetUser) {
+        throw new ApiError(404, "User not found");
+    }
+
     // check existing chat
     let chat = await Chat.findOne({
         isGroupChat: false,

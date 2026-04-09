@@ -227,6 +227,32 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     );
 });
 
+const searchUsers = asyncHandler(async (req, res) => {
+    const query = (req.query?.q || req.query?.query || "").trim();
+    const limit = Math.min(Number(req.query?.limit) || 20, 50);
+
+    const filter = {
+        _id: { $ne: req.user._id }
+    };
+
+    if (query) {
+        filter.$or = [
+            { fullname: { $regex: query, $options: "i" } },
+            { username: { $regex: query, $options: "i" } },
+            { email: { $regex: query, $options: "i" } }
+        ];
+    }
+
+    const users = await User.find(filter)
+        .select("-password -refreshToken")
+        .sort({ createdAt: -1 })
+        .limit(limit);
+
+    return res.status(200).json(
+        new ApiResponse(200, users, "Users fetched successfully")
+    );
+});
+
 export {
     registerUser,
     loginUser,
@@ -234,4 +260,5 @@ export {
     refreshAccessToken,
     changeCurrentPassword,
     getCurrentUser,
+    searchUsers,
 };

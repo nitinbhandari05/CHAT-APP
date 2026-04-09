@@ -15,9 +15,17 @@ const sendMessage = asyncHandler(async (req, res) => {
     }
 
     // check chat exists
-    const chatExists = await Chat.findById(chatId);
+    const chatExists = await Chat.findById(chatId).populate("users", "_id");
     if (!chatExists) {
         throw new ApiError(404, "Chat not found");
+    }
+
+    const isParticipant = chatExists.users.some(
+        (user) => user?._id?.toString() === req.user._id.toString()
+    );
+
+    if (!isParticipant) {
+        throw new ApiError(403, "You are not a participant in this chat");
     }
 
     // create message

@@ -5,7 +5,8 @@ import {
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
-    getCurrentUser
+    getCurrentUser,
+    searchUsers
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -21,6 +22,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // protected routes
+router.get("/search", verifyJWT, searchUsers);
 router.post("/logout", verifyJWT, logoutUser);
 router.post("/refresh-token", refreshAccessToken);
 router.post("/change-password", verifyJWT, changeCurrentPassword);
