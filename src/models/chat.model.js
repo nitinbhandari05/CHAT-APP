@@ -12,7 +12,7 @@ const chatSchema = new Schema(
       default: false
     },
 
-    users: [   
+    users: [
       {
         type: Schema.Types.ObjectId,
         ref: "User"
@@ -29,13 +29,13 @@ const chatSchema = new Schema(
       ref: "Message"
     },
 
-  
-    lastActivity: {   
+
+    lastActivity: {
       type: Date,
       default: Date.now
     },
 
-    pinnedMessages: [  
+    pinnedMessages: [
       {
         type: Schema.Types.ObjectId,
         ref: "Message"

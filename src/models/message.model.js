@@ -5,7 +5,7 @@ const messageSchema = new Schema(
     sender: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true   
+      required: true
     },
 
     content: {
@@ -13,13 +13,13 @@ const messageSchema = new Schema(
       trim: true
     },
 
-    chat: {           
+    chat: {
       type: Schema.Types.ObjectId,
       ref: "Chat",
-      required: true   
+      required: true
     },
 
-    readBy: [          
+    readBy: [
       {
         type: Schema.Types.ObjectId,
         ref: "User"

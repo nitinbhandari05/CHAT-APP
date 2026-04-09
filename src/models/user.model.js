@@ -5,16 +5,16 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
-      required: true,          
+      required: true,
       unique: true,
-      lowercase: true,         
+      lowercase: true,
       trim: true,
       index: true
     },
 
     email: {
       type: String,
-      required: true,         
+      required: true,
       unique: true,
       lowercase: true,
       trim: true
@@ -25,7 +25,7 @@ const userSchema = new Schema(
       required: true,
       trim: true,
       index: true
-      
+
     },
 
     avatar: {
@@ -37,7 +37,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Password is required"],
       minlength: 6,
-      select: false           
+      select: false
     },
 
     role: {
@@ -46,19 +46,19 @@ const userSchema = new Schema(
       default: "user"
     },
 
-    
-    status: {                  
+
+    status: {
       type: String,
       enum: ["online", "offline"],
       default: "offline"
     },
 
-    lastSeen: {                
+    lastSeen: {
       type: Date,
       default: Date.now
     },
 
-    socketId: {              
+    socketId: {
       type: String,
       default: null
     }

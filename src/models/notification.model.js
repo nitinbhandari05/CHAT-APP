@@ -5,7 +5,7 @@ const notificationSchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true   
+      required: true
     },
 
     type: {
@@ -16,11 +16,11 @@ const notificationSchema = new Schema(
 
     content: {
       type: String,
-      trim: true     
+      trim: true
     },
 
     relatedChat: {
-      type: Schema.Types.ObjectId,   
+      type: Schema.Types.ObjectId,
       ref: "Chat"
     },
 
