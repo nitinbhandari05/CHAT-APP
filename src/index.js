@@ -29,7 +29,7 @@ const startServer = (server, port, retriesLeft = 5) => {
 
 connectDB()
 .then(() => {
-    const port = Number(process.env.PORT) || 5050;
+    const port = Number(process.env.PORT) || 5051;
     const server = http.createServer(app);
 
     initializeSocketIO(server);
