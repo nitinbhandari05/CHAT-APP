@@ -21,32 +21,61 @@
       --message-them: #12201a;
       --chip: #16231c;
       --surface: rgba(11, 16, 13, 0.96);
+      --page-bg: #07110d;
+      --page-bg-2: #0a1410;
+      --page-glow-1: rgba(88, 234, 139, 0.10);
+      --page-glow-2: rgba(40, 192, 119, 0.08);
+    }
+    html[data-theme="light"] {
+      --bg: #eef5ef;
+      --panel: #f7fbf7;
+      --panel-2: #edf4ee;
+      --text: #102018;
+      --muted: #587066;
+      --border: rgba(16, 32, 24, 0.10);
+      --accent: #1f9d55;
+      --accent-2: #158347;
+      --accent-weak: rgba(31, 157, 85, 0.12);
+      --danger: #d94f4f;
+      --shadow: 0 20px 60px rgba(15, 30, 21, 0.12);
+      --message-me: linear-gradient(180deg, #d8f5e5 0%, #c7edd8 100%);
+      --message-them: #ffffff;
+      --chip: #e6f0e8;
+      --surface: rgba(249, 252, 249, 0.95);
+      --page-bg: #edf5ef;
+      --page-bg-2: #f7fbf8;
+      --page-glow-1: rgba(31, 157, 85, 0.08);
+      --page-glow-2: rgba(31, 157, 85, 0.05);
     }
     html[data-theme="dark"] {
-      --bg: #07110d;
-      --panel: #0d1813;
-      --panel-2: #111b16;
-      --text: #eaf5ef;
-      --muted: #92a79c;
-      --border: rgba(234, 245, 239, 0.08);
-      --accent: #57d38b;
-      --accent-2: #2dbf73;
-      --accent-weak: rgba(87, 211, 139, 0.14);
-      --danger: #f07f7f;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-      --message-me: linear-gradient(180deg, #174d34 0%, #123b29 100%);
-      --message-them: #10211a;
-      --chip: #11241b;
-      --surface: rgba(10, 17, 13, 0.92);
+      --bg: #06090c;
+      --panel: #0b1115;
+      --panel-2: #101820;
+      --text: #f0f5f7;
+      --muted: #90a1ad;
+      --border: rgba(148, 163, 184, 0.12);
+      --accent: #5ce090;
+      --accent-2: #2ebd76;
+      --accent-weak: rgba(92, 224, 144, 0.14);
+      --danger: #f08d8d;
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.56);
+      --message-me: linear-gradient(180deg, #1d5a3f 0%, #163e2d 100%);
+      --message-them: #0f171d;
+      --chip: #13212a;
+      --surface: rgba(8, 12, 16, 0.94);
+      --page-bg: #04070a;
+      --page-bg-2: #0a1116;
+      --page-glow-1: rgba(65, 215, 145, 0.09);
+      --page-glow-2: rgba(49, 156, 229, 0.06);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(88, 234, 139, 0.10), transparent 28%),
-        radial-gradient(circle at top right, rgba(40,192,119,0.08), transparent 24%),
-        linear-gradient(180deg, #07110d 0%, #0a1410 100%);
+        radial-gradient(circle at top left, var(--page-glow-1), transparent 28%),
+        radial-gradient(circle at top right, var(--page-glow-2), transparent 24%),
+        linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-2) 100%);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
@@ -303,7 +332,7 @@
       cursor: pointer;
     }
     .list-item:hover { border-color: var(--border); transform: translateY(-1px); background: rgba(255,255,255,0.02); }
-    .list-item.active { border-color: rgba(31,157,85,0.35); background: rgba(40,197,111,0.11); }
+    .list-item.active { border-color: rgba(92,224,144,0.32); background: rgba(92,224,144,0.10); }
     .list-item .content { min-width: 0; flex: 1; display: grid; gap: 3px; }
     .list-item .content strong, .chat-name { font-size: 14px; font-weight: 800; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .list-item .content span { font-size: 12px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -329,9 +358,45 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
-    .message-row.me .bubble { background: var(--message-me); }
+    .message-row.me .bubble { background: var(--message-me); border-color: rgba(92,224,144,0.22); }
     .bubble .meta { display: flex; justify-content: flex-end; gap: 6px; font-size: 11px; color: var(--muted); }
     .bubble img, .bubble video { max-width: 100%; border-radius: 14px; display: block; }
+    .attachment-card {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+    }
+    .attachment-card img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+    .attachment-meta {
+      display: grid;
+      gap: 2px;
+    }
+    .attachment-meta strong {
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .attachment-meta span {
+      font-size: 12px;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .attachment-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .typing {
       min-height: 20px;
       color: var(--accent);
@@ -388,7 +453,7 @@
     .attachment-preview span { color: var(--muted); font-size: 12px; }
     .notice-list { display: grid; gap: 10px; max-height: 320px; overflow: auto; padding-right: 4px; }
     .notice-item { padding: 12px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--border); display: grid; gap: 8px; }
-    .notice-item.unread { border-color: rgba(31,157,85,0.3); background: var(--accent-weak); }
+    .notice-item.unread { border-color: rgba(92,224,144,0.28); background: var(--accent-weak); }
     .empty {
       display: grid;
       place-items: center;
@@ -759,6 +824,8 @@
     const filterButtons = [...document.querySelectorAll("[data-filter]")];
 
     const escapeHtml = (value = "") => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+    const isDataUrl = (value = "") => typeof value === "string" && value.startsWith("data:");
+    const isImageDataUrl = (value = "") => typeof value === "string" && value.startsWith("data:image/");
     const initials = (name = "") => {
       const parts = name.trim().split(/\s+/).filter(Boolean);
       const first = parts[0]?.[0] || "U";
@@ -821,6 +888,40 @@
       const participants = chat.users || chat.participants || [];
       const other = participants.find((p) => String(p?._id || p) !== String(state.me?._id)) || participants[0] || null;
       return { ...chat, participant: other };
+    };
+    const toObjectUrl = async (url) => {
+      if (!isDataUrl(url)) return url;
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    };
+    const openAttachment = async (url) => {
+      if (!url) return;
+      const objectUrl = await toObjectUrl(url);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if (objectUrl !== url) {
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+      }
+    };
+    const downloadAttachment = async (url, fileName = "attachment") => {
+      if (!url) return;
+      const objectUrl = await toObjectUrl(url);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      link.rel = "noopener";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      if (objectUrl !== url) {
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+      }
     };
     const renderMe = () => {
       if (!state.me) return;
@@ -913,18 +1014,37 @@
       messageList.innerHTML = state.messages.map((message) => {
         const mine = String(message.sender?._id || message.sender) === String(state.me?._id);
         const content = message.content || "";
-        const isImage = /^data:image\//.test(content);
-        const isData = /^data:/.test(content);
-        const fileName = message.fileName || content.split("/").pop()?.split(";")[0] || "attachment";
+        const attachmentType = message.messageType || (isImageDataUrl(content) ? "image" : isDataUrl(content) ? "file" : "text");
+        const isAttachment = attachmentType === "image" || attachmentType === "file";
+        const fileName = message.fileName || (isAttachment ? "attachment" : "");
+        const mimeType = (content.match(/^data:([^;]+);/i) || [])[1] || attachmentType;
         const time = new Date(message.createdAt || Date.now()).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
         let body = `<div>${escapeHtml(content)}</div>`;
-        if (isImage) {
-          body = `<img src="${content}" alt="attachment" />`;
-        } else if (isData) {
+        if (attachmentType === "image") {
           body = `
-            <a href="${content}" download="${escapeHtml(fileName)}" style="color:inherit;text-decoration:none;">
-              📎 ${escapeHtml(fileName)}
-            </a>`;
+            <div class="attachment-card">
+              <img src="${content}" alt="${escapeHtml(fileName || "image attachment")}" />
+              <div class="attachment-meta">
+                <strong>${escapeHtml(fileName || "Image")}</strong>
+                <span>${escapeHtml(mimeType)}</span>
+              </div>
+              <div class="attachment-actions">
+                <button class="ghost-btn" type="button" data-open-attachment="${escapeHtml(content)}">Open</button>
+                <button class="ghost-btn" type="button" data-download-attachment="${escapeHtml(content)}" data-file-name="${escapeHtml(fileName || "image")}">Download</button>
+              </div>
+            </div>`;
+        } else if (isAttachment) {
+          body = `
+            <div class="attachment-card">
+              <div class="attachment-meta">
+                <strong>${escapeHtml(fileName || "Attachment")}</strong>
+                <span>${escapeHtml(mimeType)}</span>
+              </div>
+              <div class="attachment-actions">
+                <button class="ghost-btn" type="button" data-open-attachment="${escapeHtml(content)}">Open</button>
+                <button class="ghost-btn" type="button" data-download-attachment="${escapeHtml(content)}" data-file-name="${escapeHtml(fileName || "attachment")}">Download</button>
+              </div>
+            </div>`;
         } else if (/^https?:\/\//.test(content)) {
           body = `<a href="${content}" target="_blank" rel="noreferrer" style="color:inherit;">${escapeHtml(content)}</a>`;
         }
@@ -940,6 +1060,18 @@
           </div>`;
       }).join("");
       messageList.scrollTop = messageList.scrollHeight;
+      [...messageList.querySelectorAll("[data-open-attachment]")].forEach((button) => {
+        button.addEventListener("click", async (event) => {
+          event.preventDefault();
+          await openAttachment(button.dataset.openAttachment);
+        });
+      });
+      [...messageList.querySelectorAll("[data-download-attachment]")].forEach((button) => {
+        button.addEventListener("click", async (event) => {
+          event.preventDefault();
+          await downloadAttachment(button.dataset.downloadAttachment, button.dataset.fileName || "attachment");
+        });
+      });
     };
     const renderNotifications = () => {
       if (!state.notifications.length) {
