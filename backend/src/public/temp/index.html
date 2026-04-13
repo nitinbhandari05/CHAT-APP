@@ -6,26 +6,26 @@
   <title>Chat App</title>
   <style>
     :root {
-      --bg: #e8efe9;
-      --panel: #ffffff;
-      --panel-2: #f6faf7;
-      --text: #102018;
-      --muted: #66756f;
-      --border: rgba(16, 32, 24, 0.10);
-      --accent: #1f9d55;
-      --accent-2: #157244;
-      --accent-weak: rgba(31, 157, 85, 0.12);
-      --danger: #d44f4f;
-      --shadow: 0 20px 60px rgba(8, 30, 16, 0.12);
-      --message-me: linear-gradient(180deg, #daf8cb 0%, #c8f4b9 100%);
-      --message-them: #ffffff;
-      --chip: #e8f3eb;
-      --surface: rgba(255, 255, 255, 0.84);
+      --bg: #09110d;
+      --panel: #101813;
+      --panel-2: #16201a;
+      --text: #eef5ef;
+      --muted: #93a59b;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #28c56f;
+      --accent-2: #179154;
+      --accent-weak: rgba(40, 197, 111, 0.14);
+      --danger: #f07f7f;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+      --message-me: linear-gradient(180deg, #174d34 0%, #123b29 100%);
+      --message-them: #12201a;
+      --chip: #16231c;
+      --surface: rgba(11, 16, 13, 0.96);
     }
     html[data-theme="dark"] {
       --bg: #07110d;
       --panel: #0d1813;
-      --panel-2: #101d17;
+      --panel-2: #111b16;
       --text: #eaf5ef;
       --muted: #92a79c;
       --border: rgba(234, 245, 239, 0.08);
@@ -37,16 +37,16 @@
       --message-me: linear-gradient(180deg, #174d34 0%, #123b29 100%);
       --message-them: #10211a;
       --chip: #11241b;
-      --surface: rgba(10, 17, 13, 0.86);
+      --surface: rgba(10, 17, 13, 0.92);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       background:
-        radial-gradient(circle at top left, rgba(31,157,85,0.16), transparent 30%),
-        radial-gradient(circle at top right, rgba(40,192,119,0.16), transparent 28%),
-        var(--bg);
+        radial-gradient(circle at top left, rgba(88, 234, 139, 0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(40,192,119,0.08), transparent 24%),
+        linear-gradient(180deg, #07110d 0%, #0a1410 100%);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
@@ -55,11 +55,11 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 18px;
+      padding: 14px;
     }
     .card {
-      width: min(1480px, 100%);
-      min-height: min(960px, calc(100vh - 36px));
+      width: min(1520px, 100%);
+      min-height: min(980px, calc(100vh - 28px));
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 28px;
@@ -73,7 +73,9 @@
       min-height: inherit;
     }
     .hero {
-      background: linear-gradient(160deg, rgba(31,157,85,0.96), rgba(18, 68, 40, 0.96));
+      background:
+        linear-gradient(160deg, rgba(24, 96, 60, 0.98), rgba(12, 34, 23, 0.98)),
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1), transparent 35%);
       color: #fff;
       padding: 48px;
       position: relative;
@@ -147,7 +149,7 @@
     }
     .auth-panel {
       background: var(--panel);
-      padding: 28px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -158,7 +160,7 @@
       gap: 10px;
       background: var(--panel-2);
       padding: 8px;
-      border-radius: 18px;
+      border-radius: 20px;
       border: 1px solid var(--border);
     }
     .tab-btn, .ghost-btn, .primary-btn, .danger-btn, .icon-btn {
@@ -177,7 +179,7 @@
     .tab-btn.active {
       background: var(--panel);
       color: var(--text);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.22);
     }
     .field {
       display: grid;
@@ -212,7 +214,7 @@
 
     .grid-app {
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr) 320px;
+      grid-template-columns: 380px minmax(0, 1fr) 330px;
       min-height: inherit;
       height: 100%;
     }
@@ -296,12 +298,12 @@
       align-items: center;
       padding: 12px;
       border: 1px solid transparent;
-      border-radius: 18px;
+      border-radius: 20px;
       background: var(--panel-2);
       cursor: pointer;
     }
-    .list-item:hover { border-color: var(--border); transform: translateY(-1px); }
-    .list-item.active { border-color: rgba(31,157,85,0.35); background: var(--accent-weak); }
+    .list-item:hover { border-color: var(--border); transform: translateY(-1px); background: rgba(255,255,255,0.02); }
+    .list-item.active { border-color: rgba(31,157,85,0.35); background: rgba(40,197,111,0.11); }
     .list-item .content { min-width: 0; flex: 1; display: grid; gap: 3px; }
     .list-item .content strong, .chat-name { font-size: 14px; font-weight: 800; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .list-item .content span { font-size: 12px; color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -354,7 +356,7 @@
       40% { transform: translateY(-4px); opacity: 1; }
     }
     .composer {
-      padding-top: 10px;
+      padding-top: 12px;
       border-top: 1px solid var(--border);
       display: grid;
       gap: 10px;
@@ -362,7 +364,7 @@
     .composer-row { display: flex; gap: 10px; align-items: end; }
     .composer-row textarea {
       flex: 1;
-      min-height: 52px;
+      min-height: 58px;
       max-height: 140px;
       resize: none;
       line-height: 1.45;
@@ -413,6 +415,61 @@
       display: none;
       z-index: 40;
       max-width: min(92vw, 760px);
+    }
+    .stack { display: grid; gap: 10px; }
+    .app-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .mini-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .pill.active {
+      background: rgba(40, 197, 111, 0.18);
+      border-color: rgba(40, 197, 111, 0.38);
+      color: #dff9e8;
+    }
+    .top-search {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02)),
+        var(--panel-2);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    .top-search input {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 2px;
     }
     @media (max-width: 1200px) { .grid-app { grid-template-columns: 300px minmax(0, 1fr); } .info-panel { display: none; } }
     @media (max-width: 920px) {
@@ -501,11 +558,21 @@
             <button class="icon-btn" id="themeToggle" type="button" title="Toggle theme">☾</button>
           </div>
           <div class="sidebar-body">
+            <div class="stack">
+              <div class="app-toolbar">
+                <div class="section-label"><span>Inbox</span><span id="chatCount">0 chats</span></div>
+              </div>
+              <div class="mini-tabs">
+                <button class="pill active" type="button" data-filter="all">All</button>
+                <button class="pill" type="button" data-filter="unread">Unread</button>
+                <button class="pill" type="button" data-filter="groups">Groups</button>
+                <button class="pill" type="button" data-filter="people">People</button>
+              </div>
+            </div>
             <div class="search-wrap">
-              <input class="search-input" id="userSearchInput" placeholder="Search people to chat with" />
-              <div class="composer-row">
-                <button class="ghost-btn" id="refreshUsersBtn" type="button">Refresh people</button>
-                <button class="ghost-btn" id="refreshChatsBtn" type="button">Refresh chats</button>
+              <div class="top-search">
+                <span>⌕</span>
+                <input id="userSearchInput" placeholder="Search people or chats" />
               </div>
             </div>
             <form class="stack" id="groupChatForm">
@@ -535,7 +602,6 @@
               <span id="activeChatStatus">Search a person or open an existing chat</span>
             </div>
             <div class="composer-row">
-              <button class="icon-btn" id="refreshMessagesBtn" type="button" title="Refresh messages">↻</button>
               <button class="icon-btn" id="logoutMiniBtn" type="button" title="Logout">⎋</button>
             </div>
           </div>
@@ -573,7 +639,6 @@
               <strong>Updates</strong>
               <span>Notifications and settings</span>
             </div>
-            <button class="ghost-btn" id="refreshNotificationsBtn" type="button">Refresh</button>
           </div>
           <div class="info-body">
             <div class="stack">
@@ -647,13 +712,15 @@
       activeChatId: "",
       socket: null,
       onlineUsers: new Set(JSON.parse(localStorage.getItem("chat_online_users") || "[]")),
-      theme: localStorage.getItem("chat_theme") || "light",
+      theme: localStorage.getItem("chat_theme") || "dark",
       attachment: null,
       selectedGroupUsers: new Set(),
+      chatFilter: localStorage.getItem("chat_filter") || "all",
       typingTimer: null,
       isTyping: false,
       refreshTimer: null
     };
+    const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 
     const $ = (id) => document.getElementById(id);
     const authView = $("authView");
@@ -671,16 +738,13 @@
     const chatList = $("chatList");
     const messageList = $("messageList");
     const notificationList = $("notificationList");
+    const chatCount = $("chatCount");
     const activeChatName = $("activeChatName");
     const activeChatStatus = $("activeChatStatus");
     const typingState = $("typingState");
     const typingText = $("typingText");
     const messageInput = $("messageInput");
     const sendMessageForm = $("sendMessageForm");
-    const refreshUsersBtn = $("refreshUsersBtn");
-    const refreshChatsBtn = $("refreshChatsBtn");
-    const refreshMessagesBtn = $("refreshMessagesBtn");
-    const refreshNotificationsBtn = $("refreshNotificationsBtn");
     const logoutBtn = $("logoutBtn");
     const logoutMiniBtn = $("logoutMiniBtn");
     const passwordForm = $("passwordForm");
@@ -692,6 +756,7 @@
     const themeToggle = $("themeToggle");
     const onlineCount = $("onlineCount");
     const toast = $("toast");
+    const filterButtons = [...document.querySelectorAll("[data-filter]")];
 
     const escapeHtml = (value = "") => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
     const initials = (name = "") => {
@@ -741,6 +806,14 @@
       fileInput.value = "";
       attachmentPreview.classList.add("hidden");
       attachmentPreview.innerHTML = "";
+    };
+    const setChatFilter = (filter) => {
+      state.chatFilter = filter;
+      localStorage.setItem("chat_filter", filter);
+      filterButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === filter);
+      });
+      renderChats();
     };
     const normalizeChat = (chat) => {
       if (!chat) return null;
@@ -793,15 +866,27 @@
       });
     };
     const renderChats = () => {
-      if (!state.chats.length) {
+      const unreadForChat = (chatId) => state.notifications.filter((notification) => !notification.isRead && String(notification.chatId || notification.relatedChat?._id) === String(chatId)).length;
+      const filteredChats = state.chats.filter((chat) => {
+        const unreadCount = unreadForChat(chat._id);
+        if (state.chatFilter === "unread") return unreadCount > 0;
+        if (state.chatFilter === "groups") return !!chat.isGroupChat;
+        if (state.chatFilter === "people") return !chat.isGroupChat;
+        return true;
+      });
+
+      chatCount.textContent = `${filteredChats.length} chat${filteredChats.length === 1 ? "" : "s"}`;
+
+      if (!filteredChats.length) {
         chatList.innerHTML = `<div class="empty"><div><strong>No chats yet</strong><div>Search a person above to start one.</div></div></div>`;
         return;
       }
-      chatList.innerHTML = state.chats.map((chat) => {
+      chatList.innerHTML = filteredChats.map((chat) => {
         const other = chat.isGroupChat ? chat.chatName : chat.participant;
         const online = other && isUserOnline(other._id);
         const active = state.activeChatId === chat._id ? "active" : "";
         const preview = chat.latestMessage?.content || "No messages yet";
+        const unreadCount = unreadForChat(chat._id);
         return `
           <div class="list-item ${active}" data-chat-id="${chat._id}">
             ${avatarTemplate(other?.fullname || chat.chatName || "Chat", online)}
@@ -809,7 +894,7 @@
               <strong>${escapeHtml(chat.isGroupChat ? chat.chatName : (other?.fullname || other?.username || "Chat"))}</strong>
               <span>${escapeHtml(preview)}</span>
             </div>
-            ${chat.unreadCount ? `<span class="badge">${chat.unreadCount}</span>` : `<span class="badge">${online ? "Online" : "Open"}</span>`}
+            ${unreadCount ? `<span class="badge">${unreadCount}</span>` : `<span class="badge">${online ? "Online" : "Open"}</span>`}
           </div>`;
       }).join("");
       [...chatList.querySelectorAll("[data-chat-id]")].forEach((el) => {
@@ -911,6 +996,7 @@
       const payload = await apiFetch("/notifications");
       state.notifications = unwrap(payload) || [];
       renderNotifications();
+      renderChats();
     };
     const loadMessages = async (chatId) => {
       if (!chatId) return;
@@ -936,9 +1022,7 @@
       const chat = preloadedChat || state.chats.find((item) => item._id === chatId) || null;
       setActiveChat(chat ? normalizeChat(chat) : null);
       await loadMessages(chatId);
-      await Promise.allSettled([
-        markChatNotificationsRead(chatId)
-      ]);
+      await markChatNotificationsRead(chatId);
       if (state.socket) {
         state.socket.emit("join chat", chatId);
       }
@@ -954,22 +1038,25 @@
     };
     const markChatNotificationsRead = async (chatId) => {
       if (!chatId) return;
-      const unreadIds = state.notifications
-        .filter((notification) => !notification.isRead && String(notification.chatId || notification.relatedChat?._id) === String(chatId))
-        .map((notification) => notification._id);
-
-      if (!unreadIds.length) return;
-
-      await Promise.allSettled(
-        unreadIds.map((id) => apiFetch(`/notifications/${id}`, { method: "PUT" }))
+      const response = await apiFetch(`/notifications/chat/${chatId}/read`, {
+        method: "PUT"
+      });
+      const data = unwrap(response);
+      const unreadIds = new Set(
+        state.notifications
+          .filter((notification) => String(notification.chatId || notification.relatedChat?._id) === String(chatId))
+          .map((notification) => notification._id)
       );
 
-      state.notifications = state.notifications.map((notification) => (
-        unreadIds.includes(notification._id)
-          ? { ...notification, isRead: true }
-          : notification
-      ));
+      if (data?.count) {
+        state.notifications = state.notifications.map((notification) => (
+          unreadIds.has(notification._id)
+            ? { ...notification, isRead: true }
+            : notification
+        ));
+      }
       renderNotifications();
+      renderChats();
     };
     const notifyBrowser = (title, body) => {
       if (!("Notification" in window)) return;
@@ -1036,6 +1123,11 @@
     };
     const handleAttachment = async (file) => {
       if (!file) return;
+      if (file.size > MAX_ATTACHMENT_BYTES) {
+        showToast("Attachment is too large. Please keep it under 10 MB.");
+        fileInput.value = "";
+        return;
+      }
       const dataUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
@@ -1113,6 +1205,7 @@
         const notification = payload?.notification || payload;
         state.notifications = [notification, ...state.notifications.filter((item) => item._id !== notification._id)];
         renderNotifications();
+        renderChats();
         notifyBrowser("Notification", notification?.content || "New notification");
       });
 
@@ -1120,6 +1213,7 @@
         const updated = payload?.notification || payload;
         state.notifications = state.notifications.map((item) => item._id === updated._id ? updated : item);
         renderNotifications();
+        renderChats();
       });
     };
     const loadBootData = async () => {
@@ -1144,7 +1238,7 @@
         if (state.activeChatId) {
           loadMessages(state.activeChatId);
         }
-      }, 12000);
+      }, 5000);
     };
     const stopAutoRefresh = () => {
       if (state.refreshTimer) {
@@ -1236,12 +1330,9 @@
     userSearchInput.addEventListener("input", async (event) => {
       await loadUsers(event.target.value.trim());
     });
-    refreshUsersBtn.addEventListener("click", () => loadUsers(userSearchInput.value.trim()));
-    refreshChatsBtn.addEventListener("click", loadChats);
-    refreshMessagesBtn.addEventListener("click", async () => {
-      if (state.activeChatId) await loadMessages(state.activeChatId);
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => setChatFilter(button.dataset.filter));
     });
-    refreshNotificationsBtn.addEventListener("click", loadNotifications);
     logoutBtn.addEventListener("click", async () => {
       try { await apiFetch("/users/logout", { method: "POST" }); } catch {}
       resetAuth();
@@ -1311,6 +1402,7 @@
 
     (async () => {
       setTheme(state.theme);
+      setChatFilter(state.chatFilter);
       if (state.token) {
         try {
           await applyAuth(state.token);

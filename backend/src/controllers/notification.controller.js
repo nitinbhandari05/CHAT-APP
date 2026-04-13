@@ -106,8 +106,63 @@ const markAsRead = asyncHandler(async (req, res) => {
     );
 });
 
+// MARK CHAT NOTIFICATIONS AS READ
+const markChatNotificationsAsRead = asyncHandler(async (req, res) => {
+    const chatId = req.params.chatId || req.body?.chatId;
+
+    if (!chatId) {
+        throw new ApiError(400, "Chat ID is required");
+    }
+
+    const unreadNotifications = await Notification.find({
+        user: req.user._id,
+        relatedChat: chatId,
+        isRead: false
+    }).populate("relatedChat", "chatName isGroupChat users");
+
+    if (!unreadNotifications.length) {
+        return res.status(200).json(
+            new ApiResponse(200, { count: 0, chatId: String(chatId) }, "No unread notifications")
+        );
+    }
+
+    await Notification.updateMany(
+        {
+            user: req.user._id,
+            relatedChat: chatId,
+            isRead: false
+        },
+        {
+            isRead: true
+        }
+    );
+
+    unreadNotifications.forEach((notification) => {
+        emitSocketEvent({
+            room: req.user._id,
+            event: "notification read",
+            data: formatNotification({
+                ...notification.toObject(),
+                isRead: true
+            })
+        });
+    });
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                count: unreadNotifications.length,
+                chatId: String(chatId)
+            },
+            "Chat notifications marked as read"
+        )
+    );
+});
+
 export {
     createNotification,
     getNotifications,
-    markAsRead
+    markAsRead,
+    markChatNotificationsAsRead
 }
