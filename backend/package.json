@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon -L --watch src --ext js,json,html src/index.js",
     "start": "node src/index.js"
   },
   "keywords": [],

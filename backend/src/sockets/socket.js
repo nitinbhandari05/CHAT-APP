@@ -1,6 +1,42 @@
 import { Server } from "socket.io";
 
 let io;
+const onlineUsers = new Map();
+
+const broadcastOnlineUsers = () => {
+    if (!io) {
+        return;
+    }
+
+    io.emit("online users", Array.from(onlineUsers.keys()));
+};
+
+const registerUserSocket = (userId, socketId) => {
+    const key = String(userId);
+    const sockets = onlineUsers.get(key) || new Set();
+    sockets.add(socketId);
+    onlineUsers.set(key, sockets);
+    broadcastOnlineUsers();
+};
+
+const unregisterUserSocket = (userId, socketId) => {
+    const key = String(userId);
+    const sockets = onlineUsers.get(key);
+
+    if (!sockets) {
+        return;
+    }
+
+    sockets.delete(socketId);
+
+    if (!sockets.size) {
+        onlineUsers.delete(key);
+    } else {
+        onlineUsers.set(key, sockets);
+    }
+
+    broadcastOnlineUsers();
+};
 
 const initializeSocketIO = (server) => {
     io = new Server(server, {
@@ -14,13 +50,20 @@ const initializeSocketIO = (server) => {
     io.on("connection", (socket) => {
         console.log(`Socket connected: ${socket.id}`);
 
-        socket.on("setup", (userData) => {
-            if (!userData?._id) {
+        socket.on("setup", (userData = {}) => {
+            const userId = userData?._id || userData?.userId || userData?.id;
+
+            if (!userId) {
                 return;
             }
 
-            socket.join(userData._id);
-            socket.emit("connected");
+            socket.data.userId = String(userId);
+            socket.join(String(userId));
+            registerUserSocket(userId, socket.id);
+            socket.emit("connected", {
+                userId: String(userId),
+                onlineUsers: Array.from(onlineUsers.keys())
+            });
         });
 
         socket.on("join chat", (room) => {
@@ -28,15 +71,27 @@ const initializeSocketIO = (server) => {
                 return;
             }
 
-            socket.join(room);
+            socket.join(String(room));
         });
 
-        socket.on("typing", (room) => {
-            socket.to(room).emit("typing");
+        socket.on("typing", (payload) => {
+            const room = payload?.chatId || payload?.room || payload;
+
+            if (!room) {
+                return;
+            }
+
+            socket.to(String(room)).emit("typing", payload);
         });
 
-        socket.on("stop typing", (room) => {
-            socket.to(room).emit("stop typing");
+        socket.on("stop typing", (payload) => {
+            const room = payload?.chatId || payload?.room || payload;
+
+            if (!room) {
+                return;
+            }
+
+            socket.to(String(room)).emit("stop typing", payload);
         });
 
         socket.on("new message", (newMessage) => {
@@ -59,6 +114,12 @@ const initializeSocketIO = (server) => {
         });
 
         socket.on("disconnect", () => {
+            const userId = socket.data.userId;
+
+            if (userId) {
+                unregisterUserSocket(userId, socket.id);
+            }
+
             console.log(`Socket disconnected: ${socket.id}`);
         });
     });

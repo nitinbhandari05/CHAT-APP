@@ -32,6 +32,11 @@ const messageSchema = new Schema(
       default: "text"
     },
 
+    fileName: {
+      type: String,
+      trim: true
+    },
+
     edited: {
       type: Boolean,
       default: false

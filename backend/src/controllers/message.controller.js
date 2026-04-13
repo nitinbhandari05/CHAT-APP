@@ -8,7 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 //SEND MESSAGE
 const sendMessage = asyncHandler(async (req, res) => {
-    const { content, chatId } = req.body || {};
+    const { content, chatId, fileName } = req.body || {};
 
     if (!content || !chatId) {
         throw new ApiError(400, "Content and chatId are required");
@@ -28,11 +28,18 @@ const sendMessage = asyncHandler(async (req, res) => {
         throw new ApiError(403, "You are not a participant in this chat");
     }
 
+    const isDataUrl = typeof content === "string" && content.startsWith("data:");
+    const messageType = isDataUrl
+        ? (content.startsWith("data:image/") ? "image" : "file")
+        : "text";
+
     // create message
     let message = await Message.create({
         sender: req.user._id,
         content,
         chat: chatId,
+        messageType,
+        fileName: fileName || null,
     });
 
     // populate message
@@ -50,7 +57,12 @@ const sendMessage = asyncHandler(async (req, res) => {
     // update latest message in chat
     await Chat.findByIdAndUpdate(chatId, {
         latestMessage: message._id,
+        lastActivity: new Date()
     });
+
+    const notificationContent = isDataUrl
+        ? `sent a ${messageType}`
+        : message.content;
 
     const recipients = (message.chat?.users || []).filter(
         (user) => user?._id?.toString() !== req.user._id.toString()
@@ -65,7 +77,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 
         await createNotification({
             user: user._id,
-            content: message.content,
+            content: notificationContent,
             relatedChat: message.chat?._id,
             type: "message"
         });

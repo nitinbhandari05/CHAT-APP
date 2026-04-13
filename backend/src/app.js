@@ -12,10 +12,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+const corsOrigin = process.env.CORS_ORIGIN;
+const corsOptions = {
+    origin: corsOrigin && corsOrigin !== "*" ? corsOrigin.split(",").map((origin) => origin.trim()).filter(Boolean) : true,
     credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "16kb" }));
 
